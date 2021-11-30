@@ -77,8 +77,6 @@ public class PosMachine {
         return quantityList;
     }
 
-
-
     private List<ItemInfo> gatherItemInfo(List<String> barcodes) {
         List<ItemInfo> shoppingCart = new ArrayList<>();
         String name = "";
@@ -89,7 +87,6 @@ public class PosMachine {
         }
         return shoppingCart;
     }
-
 
     private String fetchNameByBarcode(String barcode) {
         String productName = new String();
@@ -102,7 +99,6 @@ public class PosMachine {
         return productName;
     }
 
-
     private int fetchPriceByBarcode(String barcode) {
         int productPrice = 0;
         List<ItemInfo> database = ItemDataLoader.loadAllItemInfos();
@@ -113,7 +109,6 @@ public class PosMachine {
         }
         return productPrice;
     }
-
 
     private String generateReceipt(List<ItemInfo> shoppingCart, int[] quantityList) {
         String receipt = "***<store earning no money>Receipt***\n";
@@ -131,16 +126,13 @@ public class PosMachine {
         return receipt;
     }
 
-
     private String generateReceiptLine(ItemInfo shoppingCartItem, int quantity) {
         String line = "Name: " + shoppingCartItem.getName() + ", Quantity: " + quantity + ", Unit price: " + shoppingCartItem.getPrice() + " (yuan), Subtotal: " + quantity*shoppingCartItem.getPrice() + " (yuan)\n";
         return line;
     }
 
-
     private int fetchSubtotal(ItemInfo shoppingCartItem) {
         return shoppingCartItem.getPrice();
     }
-
 
 }
