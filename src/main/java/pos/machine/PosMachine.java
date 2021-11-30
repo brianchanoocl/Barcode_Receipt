@@ -116,8 +116,21 @@ public class PosMachine {
 
 
     private String generateReceipt(List<ItemInfo> shoppingCart, int[] quantityList) {
-        return null;
+        String receipt = "***<store earning no money>Receipt***\n";
+        int total = 0;
+        for (int i=0 ; i<quantityList.length ; i++) {
+            System.out.println(quantityList[i]);
+            receipt += generateReceiptLine(shoppingCart.get(i), quantityList[i]);
+            total += fetchSubtotal(shoppingCart.get(i))*quantityList[i];
+        }
+        receipt += "----------------------\n";
+        receipt += "Total: " + total + " (yuan)\n";
+        receipt += "**********************";
+
+
+        return receipt;
     }
+
 
     private String generateReceiptLine(ItemInfo shoppingCartItem, int quantity) {
         String line = "Name: " + shoppingCartItem.getName() + ", Quantity: " + quantity + ", Unit price: " + shoppingCartItem.getPrice() + " (yuan), Subtotal: " + quantity*shoppingCartItem.getPrice() + " (yuan)\n";
