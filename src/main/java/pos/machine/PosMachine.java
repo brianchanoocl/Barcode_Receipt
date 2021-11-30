@@ -73,8 +73,16 @@ public class PosMachine {
     }
 
     private String fetchNameByBarcode(String barcode) {
-        return null;
+        String productName = new String();
+        List<ItemInfo> database = ItemDataLoader.loadAllItemInfos();
+        for (int i=0 ; i<database.size() ; i++) {
+            ItemInfo item = database.get(i);
+            if(item.getBarcode().equals(barcode))
+                productName = item.getName();
+        }
+        return productName;
     }
+
 
     private int fetchPriceByBarcode(String barcode) {
         return 0;
