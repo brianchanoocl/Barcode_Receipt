@@ -120,8 +120,10 @@ public class PosMachine {
     }
 
     private String generateReceiptLine(ItemInfo shoppingCartItem, int quantity) {
-        return null;
+        String line = "Name: " + shoppingCartItem.getName() + ", Quantity: " + quantity + ", Unit price: " + shoppingCartItem.getPrice() + " (yuan), Subtotal: " + quantity*shoppingCartItem.getPrice() + " (yuan)\n";
+        return line;
     }
+
 
     private int fetchSubtotal(ItemInfo shoppingCartItem) {
         return shoppingCartItem.getPrice();
