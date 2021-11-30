@@ -124,7 +124,8 @@ public class PosMachine {
     }
 
     private int fetchSubtotal(ItemInfo shoppingCartItem) {
-        return 0;
+        return shoppingCartItem.getPrice();
     }
+
 
 }
