@@ -85,8 +85,16 @@ public class PosMachine {
 
 
     private int fetchPriceByBarcode(String barcode) {
-        return 0;
+        int productPrice = 0;
+        List<ItemInfo> database = ItemDataLoader.loadAllItemInfos();
+        for (int i=0 ; i<database.size() ; i++) {
+            ItemInfo item = database.get(i);
+            if(item.getBarcode().equals(barcode))
+                productPrice = item.getPrice();
+        }
+        return productPrice;
     }
+
 
     private String generateReceipt(List<ItemInfo> shoppingCart, int[] quantityList) {
         return null;
