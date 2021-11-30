@@ -69,8 +69,16 @@ public class PosMachine {
     }
 
     private List<ItemInfo> gatherItemInfo(List<String> barcodes) {
-        return null;
+        List<ItemInfo> shoppingCart = new ArrayList<>();
+        String name = "";
+        int price = 0;
+        for(String item : barcodes){
+            ItemInfo product = new ItemInfo( item, fetchNameByBarcode(item), fetchPriceByBarcode(item));
+            shoppingCart.add(product);
+        }
+        return shoppingCart;
     }
+
 
     private String fetchNameByBarcode(String barcode) {
         String productName = new String();
