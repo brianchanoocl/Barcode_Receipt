@@ -65,8 +65,19 @@ public class PosMachine {
 
 
     private int[] digestBarcodesQuantity(List<String> digestedBarcodes, List<String> barcodes) {
-        return null;
+        int[] quantityList = new int[digestedBarcodes.size()];
+        for(String item : barcodes){
+            for (int i=0 ; i<digestedBarcodes.size() ; i++) {
+                if( digestedBarcodes.get(i).equals(item) )
+                    quantityList[i]++;
+            }
+        }
+
+
+        return quantityList;
     }
+
+
 
     private List<ItemInfo> gatherItemInfo(List<String> barcodes) {
         List<ItemInfo> shoppingCart = new ArrayList<>();
