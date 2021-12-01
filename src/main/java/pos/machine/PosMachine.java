@@ -3,58 +3,33 @@ package pos.machine;
 import java.util.ArrayList;
 import java.util.List;
 
-class ReceiptItem {
-    private final String name;
-    private final int quantity;
-    private final int price;
-
-
-    public ReceiptItem(String name, int quantity, int price) {
-        this.name = name;
-        this.quantity = quantity;
-        this.price = price;
-    }
-
-    public int getQuantity() {
-        return quantity;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getPrice() {
-        return price;
-    }
-}
-
 public class PosMachine {
     public String printReceipt(List<String> barcodes) {
         System.out.println("function starts");
 
 
 
-        List<String> digestedBarcodes = digestBarcodes(barcodes);
-        int[] quantityList = digestBarcodesQuantity(digestedBarcodes, barcodes);
+        List<String> digestedBarcodes = getUniqueBarcode(barcodes);
+        int[] quantityList = getUniqueBarcodeQuantity(digestedBarcodes, barcodes);
 
 
-        List<ItemInfo> shoppingCart = new ArrayList<>();
-        shoppingCart = gatherItemInfo(digestedBarcodes);
-        String receipt = generateReceipt(shoppingCart, quantityList);
-        return receipt;
+        List<ItemInfo> productInfoList = getProductNameAndPrice(digestedBarcodes);
+        return generateReceipt(productInfoList, quantityList);
     }
 
-    private List<String> digestBarcodes(List<String> barcodes) {
+    private List<String> getUniqueBarcode(List<String> barcodes) {
         List<String> digestedBarcodes = new ArrayList<>();
-        Boolean repeated = false;
+        boolean repeated;
         for(String item : barcodes){
             if( digestedBarcodes.size() < 1 )
                 digestedBarcodes.add(item);
             else{
                 repeated = false;
-                for (int i=0 ; i<digestedBarcodes.size() ; i++) {
-                    if( digestedBarcodes.get(i).equals(item) )
+                for (String digestedBarcode : digestedBarcodes) {
+                    if (digestedBarcode.equals(item)) {
                         repeated = true;
+                        break;
+                    }
                 }
                 if(!repeated)
                     digestedBarcodes.add(item);
@@ -64,7 +39,7 @@ public class PosMachine {
     }
 
 
-    private int[] digestBarcodesQuantity(List<String> digestedBarcodes, List<String> barcodes) {
+    private int[] getUniqueBarcodeQuantity(List<String> digestedBarcodes, List<String> barcodes) {
         int[] quantityList = new int[digestedBarcodes.size()];
         for(String item : barcodes){
             for (int i=0 ; i<digestedBarcodes.size() ; i++) {
@@ -77,23 +52,20 @@ public class PosMachine {
         return quantityList;
     }
 
-    private List<ItemInfo> gatherItemInfo(List<String> barcodes) {
-        List<ItemInfo> shoppingCart = new ArrayList<>();
-        String name = "";
-        int price = 0;
+    private List<ItemInfo> getProductNameAndPrice(List<String> barcodes) {
+        List<ItemInfo> productInfoList = new ArrayList<>();
         for(String item : barcodes){
             ItemInfo product = new ItemInfo( item, fetchNameByBarcode(item), fetchPriceByBarcode(item));
-            shoppingCart.add(product);
+            productInfoList.add(product);
         }
-        return shoppingCart;
+        return productInfoList;
     }
 
     private String fetchNameByBarcode(String barcode) {
-        String productName = new String();
+        String productName = "";
         List<ItemInfo> database = ItemDataLoader.loadAllItemInfos();
-        for (int i=0 ; i<database.size() ; i++) {
-            ItemInfo item = database.get(i);
-            if(item.getBarcode().equals(barcode))
+        for (ItemInfo item : database) {
+            if (item.getBarcode().equals(barcode))
                 productName = item.getName();
         }
         return productName;
@@ -102,21 +74,20 @@ public class PosMachine {
     private int fetchPriceByBarcode(String barcode) {
         int productPrice = 0;
         List<ItemInfo> database = ItemDataLoader.loadAllItemInfos();
-        for (int i=0 ; i<database.size() ; i++) {
-            ItemInfo item = database.get(i);
-            if(item.getBarcode().equals(barcode))
+        for (ItemInfo item : database) {
+            if (item.getBarcode().equals(barcode))
                 productPrice = item.getPrice();
         }
         return productPrice;
     }
 
-    private String generateReceipt(List<ItemInfo> shoppingCart, int[] quantityList) {
+    private String generateReceipt(List<ItemInfo> productInfoList, int[] quantityList) {
         String receipt = "***<store earning no money>Receipt***\n";
         int total = 0;
         for (int i=0 ; i<quantityList.length ; i++) {
             System.out.println(quantityList[i]);
-            receipt += generateReceiptLine(shoppingCart.get(i), quantityList[i]);
-            total += fetchSubtotal(shoppingCart.get(i))*quantityList[i];
+            receipt += generateReceiptLine(productInfoList.get(i), quantityList[i]);
+            total += fetchSubtotal(productInfoList.get(i))*quantityList[i];
         }
         receipt += "----------------------\n";
         receipt += "Total: " + total + " (yuan)\n";
@@ -126,13 +97,12 @@ public class PosMachine {
         return receipt;
     }
 
-    private String generateReceiptLine(ItemInfo shoppingCartItem, int quantity) {
-        String line = "Name: " + shoppingCartItem.getName() + ", Quantity: " + quantity + ", Unit price: " + shoppingCartItem.getPrice() + " (yuan), Subtotal: " + quantity*shoppingCartItem.getPrice() + " (yuan)\n";
-        return line;
+    private String generateReceiptLine(ItemInfo productInfoListItem, int quantity) {
+        return "Name: " + productInfoListItem.getName() + ", Quantity: " + quantity + ", Unit price: " + productInfoListItem.getPrice() + " (yuan), Subtotal: " + quantity*productInfoListItem.getPrice() + " (yuan)\n";
     }
 
-    private int fetchSubtotal(ItemInfo shoppingCartItem) {
-        return shoppingCartItem.getPrice();
+    private int fetchSubtotal(ItemInfo productInfoListItem) {
+        return productInfoListItem.getPrice();
     }
 
 }
